@@ -6,22 +6,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import id.ac.polinema.idealbodyweight.fragment.AboutFragment;
+import id.ac.polinema.idealbodyweight.fragment.BmiIndexFragment;
 import id.ac.polinema.idealbodyweight.fragment.BrocaIndexFragment;
 import id.ac.polinema.idealbodyweight.fragment.MenuFragment;
 import id.ac.polinema.idealbodyweight.fragment.ResultFragment;
+import id.ac.polinema.idealbodyweight.util.BmiIndex;
 import id.ac.polinema.idealbodyweight.util.BrocaIndex;
 
 public class MainActivity extends AppCompatActivity implements
 		MenuFragment.OnFragmentInteractionListener,
 		BrocaIndexFragment.OnFragmentInteractionListener,
+		BmiIndexFragment.OnFragmentInteractionListener,
 		ResultFragment.OnFragmentInteractionListener {
 
 	// Deklarasikan atribut Fragment di sini
 	private AboutFragment aboutFragment;
 	private MenuFragment menuFragment;
 	private BrocaIndexFragment brocaIndexFragment;
+	private BmiIndexFragment bmiIndexFragment;
 	private ResultFragment resultFragment;
 
 
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
 				.replace(R.id.fragment_container, menuFragment)
 				.commit();
 		brocaIndexFragment = new BrocaIndexFragment();
+		bmiIndexFragment = new BmiIndexFragment();
 		resultFragment = new ResultFragment();
 
 	}
@@ -62,13 +68,15 @@ public class MainActivity extends AppCompatActivity implements
 	@Override
 	public void onBrocaIndexButtonClicked() {
 		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.fragment_container, brocaIndexFragment)
+				.replace(R.id.fragment_container, brocaIndexFragment,"brocca").addToBackStack(null)
 				.commit();
 	}
 
 	@Override
 	public void onBodyMassIndexButtonClicked() {
-
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_container, bmiIndexFragment, "bmi").addToBackStack(null)
+				.commit();
 	}
 
 	@Override
@@ -78,16 +86,31 @@ public class MainActivity extends AppCompatActivity implements
 
 	@Override
 	public void onCalculateBrocaIndexClicked(float index) {
-		resultFragment.setInformation(String.format("Your Ideal Weight is %.2f kg", index));
-		getSupportFragmentManager().beginTransaction()
+		resultFragment.setInformation(String.format("Your Ideal Height Is %.2f kg", index));
+		getSupportFragmentManager().beginTransaction().addToBackStack(null)
 				.replace(R.id.fragment_container, resultFragment)
 				.commit();
 	}
 
 	@Override
 	public void onTryAgainButtonClicked(String tag) {
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.fragment_container, brocaIndexFragment)
+		if(tag.equals("bmi")){
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.fragment_container, bmiIndexFragment).addToBackStack(null)
+					.commit();
+		}
+		else{
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.fragment_container, brocaIndexFragment).addToBackStack(null)
+					.commit();
+		}
+	}
+
+	@Override
+	public void onCalculateBmiIndexClicked(float index) {
+		resultFragment.setInformation(String.format("Your Ideal BMI Is %.2f kg", index));
+		getSupportFragmentManager().beginTransaction().addToBackStack(null)
+				.replace(R.id.fragment_container, resultFragment )
 				.commit();
 	}
 }
